@@ -10,12 +10,24 @@ namespace AsyncAwaitDemo
         {
             var startTime = DateTime.Now;
 
+            DoWorkInMainThread();
+
             await Task.Run(DoWork1);
             await Task.Run(DoWork2);
             await Task.Run(DoWork3);
 
-            // Takes approx. 12 seconds
+            // Takes approx. 16 seconds
             Console.WriteLine($"Total time taken: { DateTime.Now.Subtract(startTime).TotalSeconds }");
+        }
+
+        private static void DoWorkInMainThread()
+        {
+            for (int i = 1; i <= 4; i++)
+            {
+                Console.WriteLine("{0} run on main thread {1}",
+                    i, Thread.CurrentThread.ManagedThreadId);
+                Thread.Sleep(1_000);
+            }
         }
 
         static string DoWork1()
