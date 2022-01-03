@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +15,17 @@ namespace AsyncAwaitDemo
 
             var task1 = Task.Run(DoWork1);
             var task2 = Task.Run(DoWork2);
-            Task.WaitAll(task1, task2);
+            var tasks = new List<Task> { task1, task2 };
+
+            while (tasks.Count > 0)
+            {
+                var task = await Task.WhenAny(tasks);
+                if (task == task2)
+                    Console.WriteLine("Task2 completed!");
+                else
+                    Console.WriteLine("Task1 completed!");
+                tasks.Remove(task);
+            }
 
             if (task2.Result)
                 await Task.Run(DoWork3);
