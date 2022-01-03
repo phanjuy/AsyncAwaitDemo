@@ -6,7 +6,7 @@ namespace AsyncAwaitDemo
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var startTime = DateTime.Now;
 
@@ -14,10 +14,12 @@ namespace AsyncAwaitDemo
 
             var task1 = Task.Run(DoWork1);
             var task2 = Task.Run(DoWork2);
-            var task3 = Task.Run(DoWork3);
-            Task.WaitAll(task1, task2, task3);
+            Task.WaitAll(task1, task2);
 
-            // Takes approx. 9 seconds
+            if (task2.Result)
+                await Task.Run(DoWork3);
+
+            // Takes approx. 13 seconds
             Console.WriteLine($"Total time taken: { DateTime.Now.Subtract(startTime).TotalSeconds }");
         }
 
